@@ -1,4 +1,5 @@
 import json
+from flask import jsonify
 
 from flask import Blueprint, Response
 
@@ -34,6 +35,16 @@ dishes = [
             "price":5,
         },
 ]
+
+@blueprint.route("/", methods=["GET"])
+def welcome():
+    return jsonify({
+        "message": "Welcome to the Restaurant API!",
+        "endpoints": {
+            "dishes": "/dishes"
+        }
+    })
+
 
 @blueprint.route("/dishes", methods=["GET"])
 def dish_list():
