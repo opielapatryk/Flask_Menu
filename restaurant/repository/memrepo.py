@@ -15,3 +15,9 @@ class MemRepo:
         result = self.data[position-1]
 
         return result
+    
+    def post(self, dish):
+        self.data.append(dish)
+        result = self.data
+
+        return result

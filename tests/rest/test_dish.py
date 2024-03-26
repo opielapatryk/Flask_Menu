@@ -63,3 +63,24 @@ def test_get(mock_use_case, client, domain_dishes):
 
     assert http_response.status_code == 200
     assert http_response.mimetype == "application/json"
+
+@mock.patch("application.rest.dish.dish_post_use_case")
+def test_post(mock_use_case, client, domain_dishes):
+    new_dish_data = {
+        "position": 5,
+        "name": "pomidorowa",
+        "description": "Soup",
+        "price": 3.99
+    }
+        
+    mock_use_case.return_value = domain_dishes + [Dish(**new_dish_data)]
+
+    http_response = client.post("/dishes", json=new_dish_data)
+    expected_response = [dish.to_dict() for dish in domain_dishes + [Dish(**new_dish_data)]]
+
+    assert json.loads(http_response.data.decode("UTF-8")) == expected_response
+
+    mock_use_case.assert_called()
+
+    assert http_response.status_code == 201
+    assert http_response.mimetype == "application/json"

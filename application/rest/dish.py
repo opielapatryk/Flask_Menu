@@ -1,12 +1,14 @@
 import json
 from flask import jsonify
 
-from flask import Blueprint, Response
+from flask import Blueprint, Response, request
 
 from restaurant.repository.memrepo import MemRepo
 from restaurant.use_cases.dish_list import dish_list_use_case
 from restaurant.use_cases.dish_get import dish_get_use_case
+from restaurant.use_cases.dish_post import dish_post_use_case
 from restaurant.serializers.dish import DishJsonEncoder
+from restaurant.domain.dish import Dish
 
 blueprint = Blueprint("dish", __name__)
 
@@ -67,4 +69,17 @@ def dish_get(dish_id):
         json.dumps(result, cls=DishJsonEncoder),
         mimetype="application/json",
         status=200,
+    )
+
+@blueprint.route("/dishes", methods=["POST"])
+def dish_post():
+    dish_data = request.json
+    dish = Dish(**dish_data)
+    repo = MemRepo(dishes)
+    result = dish_post_use_case(repo, dish)
+
+    return Response(
+        json.dumps(result, cls=DishJsonEncoder),
+        mimetype="application/json",
+        status=201,
     )

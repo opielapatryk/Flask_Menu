@@ -20,3 +20,25 @@ DELETE: Remove dish <br>
 
 ## Entities
 Module: Dish <br>
+
+# TODO
+-[x] Apply Clean Architecture
+-[x] Layer Abstraction
+ Dependency Injection
+ UseCase Implementation
+ Serialization / Deserialization
+ Mock Repo Implementation
+ Handle Exceptions
+ Response Marshalling
+ Review usecase.execute() with Req/Resp
+ Review API Documentation
+ Implement Full Story with Entity, ValueObject
+ Request Validation with Marshmallow
+ Deal with Date/DateTime
+ Database with SQLAlchemy
+ Logging
+ OAuth2 with Authlib Implementation
+ Authentication to Resource API
+ Dev/Prod Configuration
+ Apply Tests
+ WSGI Settings
