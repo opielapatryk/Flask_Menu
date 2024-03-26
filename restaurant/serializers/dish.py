@@ -4,7 +4,7 @@ class DishJsonEncoder(json.JSONEncoder):
     def default(self, obj):
         try:
             to_serialize = {
-                "position": obj.position,
+                "id": obj.id,
                 "name": obj.name,
                 "description": obj.description,
                 "price": obj.price,

@@ -10,8 +10,8 @@ class MemRepo:
 
         return result
 
-    def get(self, position):
-        result = self.data[position-1]
+    def get(self, id):
+        result = self.data[id-1]
 
         return result
     
@@ -25,7 +25,7 @@ class MemRepo:
         updated_data = []
 
         for dish in self.data:
-            if dish['position'] == updated_dish['position']:
+            if dish['id'] == updated_dish['id']:
                 updated_data.append(updated_dish)
             else:
                 updated_data.append(dish)
@@ -33,3 +33,13 @@ class MemRepo:
         result = [Dish.from_dict(dish) for dish in updated_data]
         
         return result
+    
+    def delete(self, id):
+        for dish in self.data:
+            if dish['id'] == id:
+                self.data.remove(dish)
+
+        result = [Dish.from_dict(dish) for dish in self.data]
+        
+        return result
+

@@ -6,25 +6,25 @@ from restaurant.use_cases.dish_put import dish_put_use_case
 @pytest.fixture
 def domain_dishes_put():
     dish_1 = Dish(
-        position=1,
+        id=1,
         name='pizza',
         description='italiano sepcailze',
         price=9.99
     )
     dish_2 = Dish(
-        position=2,
+        id=2,
         name='spagetti',
         description='italiano pasta',
         price=14.99
     )
     dish_3 = Dish(
-        position=3,
+        id=3,
         name='nalesniki',
         description='Something sweet',
         price=7.99,
     )
     dish_4 = Dish(
-        position=4,
+        id=4,
         name='chips',
         description='fried potatooo',
         price=3.29
@@ -37,7 +37,7 @@ def test_dish_put(domain_dishes_put):
     repo.put.return_value = domain_dishes_put
 
     updated_dish = Dish(
-        position=3,
+        id=3,
         name='hot-dog',
         description='snack',
         price=2.99

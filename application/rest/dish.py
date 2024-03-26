@@ -8,32 +8,32 @@ from restaurant.use_cases.dish_list import dish_list_use_case
 from restaurant.use_cases.dish_get import dish_get_use_case
 from restaurant.use_cases.dish_post import dish_post_use_case
 from restaurant.use_cases.dish_put import dish_put_use_case
+from restaurant.use_cases.dish_delete import dish_delete_use_case
 from restaurant.serializers.dish import DishJsonEncoder
-from restaurant.domain.dish import Dish
 
 blueprint = Blueprint("dish", __name__)
 
 dishes = [
         {
-            "position":1,
+            "id":1,
             "name":'pierogi',
             "description":'Ulubione Polskie danie ;)',
             "price":20,
         },
         {
-            "position":2,
+            "id":2,
             "name":'schabowy z ziemniaczkami',
             "description":'Krolewska uczta!',
             "price":30,
         },
         {
-            "position":3,
+            "id":3,
             "name":'nalesniki',
             "description":'Something sweet',
             "price":7.99,
         },
         {
-            "position":4,
+            "id":4,
             "name":'pizza',
             "description":'pizza pepperoni',
             "price":5,
@@ -75,7 +75,6 @@ def dish_get(dish_id):
 @blueprint.route("/dishes", methods=["POST"])
 def dish_post():
     dish_data = request.json
-    # dish = Dish(**dish_data)
     repo = MemRepo(dishes)
     result = dish_post_use_case(repo, dish_data)
 
@@ -95,4 +94,15 @@ def dish_put():
         json.dumps(result, cls=DishJsonEncoder),
         mimetype="application/json",
         status=201,
+    )
+
+@blueprint.route("/dishes/<int:dish_id>", methods=["DELETE"])
+def dish_delete(dish_id):
+    repo = MemRepo(dishes)
+    result = dish_delete_use_case(repo, dish_id)
+
+    return Response(
+        json.dumps(result, cls=DishJsonEncoder),
+        mimetype="application/json",
+        status=204,
     )

@@ -7,7 +7,7 @@ from restaurant.domain.dish import Dish
 def test_serialize_domain_dish():
 
     dish = Dish(
-        position=1,
+        id=1,
         name="pizza",
         description="italian speciality",
         price=9.99
@@ -15,7 +15,7 @@ def test_serialize_domain_dish():
 
     expected_json = """
             {
-                "position": 1,
+                "id": 1,
                 "name": "pizza",
                 "description": "italian speciality",
                 "price": 9.99

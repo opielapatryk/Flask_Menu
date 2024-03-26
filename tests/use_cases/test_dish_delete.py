@@ -1,9 +1,7 @@
-import pytest
 from unittest import mock
-
+import pytest
 from restaurant.domain.dish import Dish
-from restaurant.use_cases.dish_post import dish_post_use_case
-
+from restaurant.use_cases.dish_delete import dish_delete_use_case
 
 @pytest.fixture
 def domain_dishes():
@@ -35,7 +33,7 @@ def domain_dishes():
     return [dish_1, dish_2, dish_3, dish_4]
 
 @pytest.fixture
-def domain_dishes_post():
+def domain_dishes_deleted():
     dish_1 = Dish(
         id=1,
         name='pizza',
@@ -60,28 +58,15 @@ def domain_dishes_post():
         description='fried potatooo',
         price=3.29
     )
-    dish_5 = Dish(
-        id=5,
-        name='pomidorowa',
-        description='Soup',
-        price=3.99
-    )
 
-    return [dish_1, dish_2, dish_3, dish_4, dish_5]
+    return [dish_1, dish_2, dish_3, dish_4]
 
 
-def test_dish_post(domain_dishes_post):
+def test_dish_delete_use_case(domain_dishes):
     repo = mock.Mock()
-    repo.post.return_value = domain_dishes_post
-
-    dish = Dish(
-        id=5,
-        name='pomidorowa',
-        description='Soup',
-        price=3.99
-    )
-
-    result = dish_post_use_case(repo, dish)
+    repo.delete.return_value = [dish for dish in domain_dishes if dish.id != 3] 
     
-    repo.post.assert_called_with(dish)
-    assert result == domain_dishes_post
+    result = dish_delete_use_case(repo, 3)
+
+    repo.delete.assert_called_with(3)
+    assert result == [dish for dish in domain_dishes if dish.id != 3]

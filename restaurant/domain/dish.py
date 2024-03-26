@@ -1,7 +1,7 @@
 import dataclasses
 @dataclasses.dataclass
 class Dish:
-    position: int
+    id: int
     name: str
     description: str
     price: float
@@ -12,7 +12,7 @@ class Dish:
     
     def to_dict(self):
         return {
-            "position": self.position,
+            "id": self.id,
             "name": self.name,
             "description": self.description,
             "price": self.price,
