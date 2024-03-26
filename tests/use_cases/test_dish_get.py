@@ -2,7 +2,7 @@ import pytest
 from unittest import mock
 
 from restaurant.domain.dish import Dish
-from restaurant.use_cases.dish_list import dish_list_use_case
+from restaurant.use_cases.dish_get import dish_get_use_case
 
 
 @pytest.fixture
@@ -35,11 +35,16 @@ def domain_dishes():
     return [dish_1, dish_2, dish_3, dish_4]
 
 
-def test_dish_list_without_parameters(domain_dishes):
+def test_dish_get(domain_dishes):
     repo = mock.Mock()
-    repo.list.return_value = domain_dishes
+    repo.get.return_value = Dish(
+        position=3,
+        name='nalesniki',
+        description='Something sweet',
+        price=7.99,
+    )
 
-    result = dish_list_use_case(repo)
-
-    repo.list.assert_called_with()
-    assert result == domain_dishes
+    result = dish_get_use_case(repo, 3)
+    
+    repo.get.assert_called_with(3)
+    assert result == domain_dishes[2]

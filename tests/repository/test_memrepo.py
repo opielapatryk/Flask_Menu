@@ -38,3 +38,15 @@ def test_repository_list_without_parameters(dish_dicts):
     dishes = [Dish.from_dict(i) for i in dish_dicts]
 
     assert repo.list() == dishes
+
+def test_repository_get(dish_dicts):
+    repo = MemRepo(dish_dicts)
+
+    dish = {
+            "position":3,
+            "name":'nalesniki',
+            "description":'Something sweet',
+            "price":7.99,
+        }
+
+    assert repo.get(3) == dish

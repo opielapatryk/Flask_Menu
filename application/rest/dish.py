@@ -5,6 +5,7 @@ from flask import Blueprint, Response
 
 from restaurant.repository.memrepo import MemRepo
 from restaurant.use_cases.dish_list import dish_list_use_case
+from restaurant.use_cases.dish_get import dish_get_use_case
 from restaurant.serializers.dish import DishJsonEncoder
 
 blueprint = Blueprint("dish", __name__)
@@ -50,6 +51,17 @@ def welcome():
 def dish_list():
     repo = MemRepo(dishes)
     result = dish_list_use_case(repo)
+
+    return Response(
+        json.dumps(result, cls=DishJsonEncoder),
+        mimetype="application/json",
+        status=200,
+    )
+
+@blueprint.route("/dishes/<int:dish_id>", methods=["GET"])
+def dish_get(dish_id):
+    repo = MemRepo(dishes)
+    result = dish_get_use_case(repo, dish_id)
 
     return Response(
         json.dumps(result, cls=DishJsonEncoder),
