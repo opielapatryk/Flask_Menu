@@ -22,23 +22,23 @@ DELETE: Remove dish <br>
 Module: Dish <br>
 
 # TODO
--[x] Apply Clean Architecture
--[x] Layer Abstraction
- Dependency Injection
- UseCase Implementation
- Serialization / Deserialization
- Mock Repo Implementation
- Handle Exceptions
- Response Marshalling
- Review usecase.execute() with Req/Resp
- Review API Documentation
- Implement Full Story with Entity, ValueObject
- Request Validation with Marshmallow
- Deal with Date/DateTime
- Database with SQLAlchemy
- Logging
- OAuth2 with Authlib Implementation
- Authentication to Resource API
- Dev/Prod Configuration
- Apply Tests
- WSGI Settings
+- [x] Apply Clean Architecture <br> 
+- [x] Layer Abstraction<br> 
+ Dependency Injection<br> 
+ UseCase Implementation<br> 
+ Serialization / Deserialization<br> 
+ Mock Repo Implementation<br> 
+ Handle Exceptions<br> 
+ Response Marshalling<br> 
+ Review usecase.execute() with Req/Resp<br> 
+ Review API Documentation<br> 
+ Implement Full Story with Entity, ValueObject<br> 
+ Request Validation with Marshmallow<br> 
+ Deal with Date/DateTime<br> 
+ Database with SQLAlchemy<br> 
+ Logging<br> 
+ OAuth2 with Authlib Implementation<br> 
+ Authentication to Resource API<br> 
+ Dev/Prod Configuration<br> 
+ Apply Tests<br> 
+ WSGI Settings<br> 
