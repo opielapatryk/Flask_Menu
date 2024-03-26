@@ -173,3 +173,4 @@ def test_repository_delete(dish_dicts,dish_dicts_delete):
     result = [Dish.from_dict(dish) for dish in dish_dicts_delete if dish['id'] != id]
 
     assert repo.delete(3) == result
+    assert repo.list() == result
