@@ -84,3 +84,27 @@ def test_post(mock_use_case, client, domain_dishes):
 
     assert http_response.status_code == 201
     assert http_response.mimetype == "application/json"
+
+@mock.patch("application.rest.dish.dish_put_use_case")
+def test_put(mock_use_case,client,domain_dishes):
+    updated_dish_dict = {
+        "position": 3,
+        "name": "hot-dog",
+        "description": "snack",
+        "price": 2.99        
+    }
+
+    updated_dish = Dish(**updated_dish_dict)
+
+    mock_use_case.return_value = [updated_dish if dish.position == updated_dish.position else dish for dish in domain_dishes]
+
+    http_response = client.put("/dishes", json=updated_dish_dict)
+
+    dishes = [updated_dish.to_dict() if dish.position == updated_dish.position else dish.to_dict() for dish in domain_dishes]
+
+    assert json.loads(http_response.data.decode("UTF-8")) == dishes
+
+    mock_use_case.assert_called()
+
+    assert http_response.status_code == 201
+    assert http_response.mimetype == "application/json"

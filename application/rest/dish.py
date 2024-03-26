@@ -7,6 +7,7 @@ from restaurant.repository.memrepo import MemRepo
 from restaurant.use_cases.dish_list import dish_list_use_case
 from restaurant.use_cases.dish_get import dish_get_use_case
 from restaurant.use_cases.dish_post import dish_post_use_case
+from restaurant.use_cases.dish_put import dish_put_use_case
 from restaurant.serializers.dish import DishJsonEncoder
 from restaurant.domain.dish import Dish
 
@@ -74,9 +75,21 @@ def dish_get(dish_id):
 @blueprint.route("/dishes", methods=["POST"])
 def dish_post():
     dish_data = request.json
-    dish = Dish(**dish_data)
+    # dish = Dish(**dish_data)
     repo = MemRepo(dishes)
-    result = dish_post_use_case(repo, dish)
+    result = dish_post_use_case(repo, dish_data)
+
+    return Response(
+        json.dumps(result, cls=DishJsonEncoder),
+        mimetype="application/json",
+        status=201,
+    )
+
+@blueprint.route("/dishes", methods=["PUT"])
+def dish_put():
+    repo = MemRepo(dishes)
+    updated_dish = request.json
+    result = dish_put_use_case(repo, updated_dish)
 
     return Response(
         json.dumps(result, cls=DishJsonEncoder),

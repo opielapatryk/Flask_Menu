@@ -67,6 +67,35 @@ def dish_dicts_post():
         }
     ]
 
+@pytest.fixture
+def dish_dicts_put():
+    return [
+        {
+            "position":1,
+            "name":'pierogi',
+            "description":'Ulubione Polskie danie ;)',
+            "price":20,
+        },
+        {
+            "position":2,
+            "name":'schabowy z ziemniaczkami',
+            "description":'Krolewska uczta!',
+            "price":30,
+        },
+        {
+            "position":3,
+            "name":'hot-dog',
+            "description":'snack',
+            "price":2.99,
+        },
+        {
+            "position":4,
+            "name":'pizza',
+            "description":'pizza pepperoni',
+            "price":5,
+        }
+    ]
+
 def test_repository_list_without_parameters(dish_dicts):
     repo = MemRepo(dish_dicts)
 
@@ -96,4 +125,19 @@ def test_repository_post(dish_dicts, dish_dicts_post):
         "price":4.99,
     }
 
-    assert repo.post(dish) == dish_dicts_post
+    result = [Dish.from_dict(dish) for dish in dish_dicts_post]
+    assert repo.post(dish) == result
+
+def test_repository_put(dish_dicts,dish_dicts_put):
+    repo = MemRepo(dish_dicts)
+
+    updated_dish = {
+        "position":3,
+        "name":'hot-dog',
+        "description":'snack',
+        "price":2.99
+    }
+
+    result = [Dish.from_dict(dish) for dish in dish_dicts_put]
+
+    assert repo.put(updated_dish) == result
