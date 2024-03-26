@@ -24,10 +24,10 @@ Module: Dish <br>
 # TODO
 - [x] Apply Clean Architecture <br> 
 - [x] Layer Abstraction<br> 
- Dependency Injection<br> 
- UseCase Implementation<br> 
- Serialization / Deserialization<br> 
- Mock Repo Implementation<br> 
+- [x] Dependency Injection<br> 
+- [x] UseCase Implementation<br> 
+- [x] Serialization / Deserialization<br> 
+- [x] Mock Repo Implementation<br> 
  Handle Exceptions<br> 
  Response Marshalling<br> 
  Review usecase.execute() with Req/Resp<br> 
@@ -40,5 +40,5 @@ Module: Dish <br>
  OAuth2 with Authlib Implementation<br> 
  Authentication to Resource API<br> 
  Dev/Prod Configuration<br> 
- Apply Tests<br> 
+- [x] Apply Tests<br> 
  WSGI Settings<br> 
