@@ -3,6 +3,7 @@ from unittest import mock
 
 from restaurant.domain.dish import Dish
 from restaurant.use_cases.dish_list import dish_list_use_case
+from restaurant.requests.dish_list import DishListRequest
 
 
 @pytest.fixture
@@ -39,7 +40,10 @@ def test_dish_list_without_parameters(domain_dishes):
     repo = mock.Mock()
     repo.list.return_value = domain_dishes
 
-    result = dish_list_use_case(repo)
+    request = DishListRequest()
 
+    response = dish_list_use_case(repo, request)
+
+    assert bool(response) is True
     repo.list.assert_called_with()
-    assert result == domain_dishes
+    assert response.value == domain_dishes
