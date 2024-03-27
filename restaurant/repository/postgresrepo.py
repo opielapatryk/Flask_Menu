@@ -21,12 +21,12 @@ class PostgresRepo:
     def _create_dish_object(self, results):
         return [
             dish.Dish(
-                id = q.id,
-                name = q.name,
-                description=q.description,
-                price=q.price,
+                id=result.id,
+                name=result.name,
+                description=result.description,
+                price=result.price,
             )
-            for q in results
+            for result in results
         ]
     
     def list(self):
@@ -35,3 +35,40 @@ class PostgresRepo:
         query = session.query(Dish)
 
         return self._create_dish_object(query.all())
+    
+
+    def get(self, id):
+        dishes = self.list()
+        for dish in dishes:
+            if dish.id == id:
+                return dish
+        return '404 Not Found'
+    
+    # def post(self, dish):
+    #     self.data.append(dish)
+    #     result = [Dish.from_dict(i) for i in self.data]
+
+    #     return result
+    
+    # def put(self, updated_dish):
+    #     updated_data = []
+
+    #     for dish in self.data:
+    #         if dish['id'] == updated_dish['id']:
+    #             updated_data.append(updated_dish)
+    #         else:
+    #             updated_data.append(dish)
+
+    #     result = [Dish.from_dict(dish) for dish in updated_data]
+        
+    #     return result
+    
+    # def delete(self, id):
+    #     for dish in self.data:
+    #         if dish['id'] == id:
+    #             self.data.remove(dish)
+
+    #     result = [Dish.from_dict(dish) for dish in self.data]
+        
+    #     return result
+

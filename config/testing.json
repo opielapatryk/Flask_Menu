@@ -1,5 +1,9 @@
 [
   {
+    "name": "APPLICATION_DB",
+    "value": "test"
+  },
+  {
     "name": "FLASK_ENV",
     "value": "production"
   },
@@ -26,9 +30,5 @@
   {
     "name": "POSTGRES_PASSWORD",
     "value": "postgres"
-  },
-  {
-    "name": "APPLICATION_DB",
-    "value": "test"
   }
 ]

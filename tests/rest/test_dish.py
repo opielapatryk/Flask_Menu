@@ -3,6 +3,7 @@ import pytest
 from unittest import mock
 
 from restaurant.domain.dish import Dish
+from restaurant.responses import ResponseSuccess
 
 @pytest.fixture
 def domain_dishes():
@@ -33,16 +34,24 @@ def domain_dishes():
 
     return [dish_1, dish_2, dish_3, dish_4]
 
+dish_dict = {
+    "id":1,
+    "name": "pizza",
+    "description": "italiano",
+    "price": 2.99
+}
+
+dishes = [Dish.from_dict(dish_dict)]
 
 @mock.patch("application.rest.dish.dish_list_use_case")
-def test_list(mock_use_case, client, domain_dishes):
-    mock_use_case.return_value = domain_dishes
+def test_list(mock_use_case, client):
+    mock_use_case.return_value = ResponseSuccess(dishes)
 
     http_response = client.get("/dishes")
 
-    dishes = [dish.to_dict() for dish in domain_dishes]
+    # dishes = [dish.to_dict() for dish in domain_dishes]
 
-    assert json.loads(http_response.data.decode("UTF-8")) == dishes
+    assert json.loads(http_response.data.decode("UTF-8")) == [dish_dict]
 
     mock_use_case.assert_called()
 

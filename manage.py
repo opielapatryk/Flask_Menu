@@ -134,6 +134,7 @@ def init_postgres():
 @click.argument("args", nargs=-1)
 def test(args):
     os.environ["APPLICATION_CONFIG"] = "testing"
+    os.environ["APPLICATION_DB"] = "test"
     configure_app(os.getenv("APPLICATION_CONFIG"))
 
     cmdline = docker_compose_cmdline("up -d")

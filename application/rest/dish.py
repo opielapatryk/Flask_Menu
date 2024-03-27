@@ -75,7 +75,7 @@ def dish_list():
 
 @blueprint.route("/dishes/<int:dish_id>", methods=["GET"])
 def dish_get(dish_id):
-    repo = MemRepo(dishes)
+    repo = PostgresRepo(postgres_configuration)
     result = dish_get_use_case(repo, dish_id)
 
     return Response(

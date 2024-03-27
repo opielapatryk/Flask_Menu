@@ -26,5 +26,9 @@
     {
       "name": "APPLICATION_DB",
       "value": "application"
+    },
+    {
+      "name": "POSTGRES_PORT",
+      "value": "5432"
     }
 ]
