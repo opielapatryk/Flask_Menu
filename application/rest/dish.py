@@ -110,7 +110,7 @@ def dish_put():
 
 @blueprint.route("/dishes/<int:dish_id>", methods=["DELETE"])
 def dish_delete(dish_id):
-    repo = MemRepo(dishes)
+    repo = PostgresRepo(postgres_configuration)
     result = dish_delete_use_case(repo, dish_id)
 
     return Response(

@@ -44,3 +44,10 @@ def test_repository_put(app_configuration,pg_session,pg_test_data):
 
     assert d[3].name == updated_dish['name']
 
+def test_repository_delete(app_configuration,pg_session,pg_test_data):
+    repo = postgresrepo.PostgresRepo(app_configuration)
+
+    d = repo.delete(21)
+
+    assert len(d) == 3
+
