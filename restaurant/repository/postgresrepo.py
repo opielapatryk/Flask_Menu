@@ -44,11 +44,16 @@ class PostgresRepo:
                 return dish
         return '404 Not Found'
     
-    # def post(self, dish):
-    #     self.data.append(dish)
-    #     result = [Dish.from_dict(i) for i in self.data]
+    def post(self, dish):
+        dish_instance = Dish(name=dish['name'], description=dish['description'], price=dish['price'])
 
-    #     return result
+        DBSession = sessionmaker(bind=self.engine)
+        session = DBSession()
+        session.add(dish_instance)
+        session.commit()
+        query = session.query(Dish)
+
+        return self._create_dish_object(query.all())
     
     # def put(self, updated_dish):
     #     updated_data = []

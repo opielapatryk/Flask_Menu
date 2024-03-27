@@ -87,7 +87,7 @@ def dish_get(dish_id):
 @blueprint.route("/dishes", methods=["POST"])
 def dish_post():
     dish_data = request.json
-    repo = MemRepo(dishes)
+    repo = PostgresRepo(postgres_configuration)
     result = dish_post_use_case(repo, dish_data)
 
     return Response(
