@@ -98,7 +98,7 @@ def dish_post():
 
 @blueprint.route("/dishes", methods=["PUT"])
 def dish_put():
-    repo = MemRepo(dishes)
+    repo = PostgresRepo(postgres_configuration)
     updated_dish = request.json
     result = dish_put_use_case(repo, updated_dish)
 

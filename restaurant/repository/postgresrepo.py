@@ -55,18 +55,33 @@ class PostgresRepo:
 
         return self._create_dish_object(query.all())
     
-    # def put(self, updated_dish):
-    #     updated_data = []
+    def put(self, updated_dish):
+        DBSession = sessionmaker(bind=self.engine)
+        session = DBSession()
+        # query = session.query(Dish)
+        dish_to_update = session.query(Dish).filter_by(id=updated_dish['id']).first()
+        if dish_to_update:
+            # Update the attributes of the existing dish
+            dish_to_update.name = updated_dish['name']
+            dish_to_update.description = updated_dish['description']
+            dish_to_update.price = updated_dish['price']
+            session.commit()
+            # dishes = self._create_dish_object(query.all())
+        query = session.query(Dish)
+        return self._create_dish_object(query.all())
 
-    #     for dish in self.data:
-    #         if dish['id'] == updated_dish['id']:
-    #             updated_data.append(updated_dish)
-    #         else:
-    #             updated_data.append(dish)
-
-    #     result = [Dish.from_dict(dish) for dish in updated_data]
+        for dish in dishes:
+            if dish.id == updated_dish['id']:
+                up_d = Dish(id=dish.id,name=updated_dish['name'], description=updated_dish['description'], price=updated_dish['price'])
+                del_d = Dish(id=dish.id,name=dish.name, description=dish.description, price=dish.price)
+                session.delete(del_d)
+                session.add(up_d)
+                session.commit()
+                break
         
-    #     return result
+        
+        query = session.query(Dish)
+        return self._create_dish_object(query.all())
     
     # def delete(self, id):
     #     for dish in self.data:
