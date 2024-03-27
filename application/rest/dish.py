@@ -1,8 +1,10 @@
+import os
 import json
 from flask import jsonify
 
 from flask import Blueprint, Response, request
 
+from restaurant.repository.postgresrepo import PostgresRepo
 from restaurant.repository.memrepo import MemRepo
 from restaurant.use_cases.dish_list import dish_list_use_case
 from restaurant.use_cases.dish_get import dish_get_use_case
@@ -10,8 +12,17 @@ from restaurant.use_cases.dish_post import dish_post_use_case
 from restaurant.use_cases.dish_put import dish_put_use_case
 from restaurant.use_cases.dish_delete import dish_delete_use_case
 from restaurant.serializers.dish import DishJsonEncoder
+from restaurant.requests.dish_list import build_dish_list_request
 
 blueprint = Blueprint("dish", __name__)
+
+postgres_configuration = {
+    "POSTGRES_USER": os.environ["POSTGRES_USER"],
+    "POSTGRES_PASSWORD": os.environ["POSTGRES_PASSWORD"],
+    "POSTGRES_HOSTNAME": os.environ["POSTGRES_HOSTNAME"],
+    "POSTGRES_PORT": os.environ["POSTGRES_PORT"],
+    "APPLICATION_DB": os.environ["APPLICATION_DB"],
+}
 
 dishes = [
         {
@@ -52,11 +63,12 @@ def welcome():
 
 @blueprint.route("/dishes", methods=["GET"])
 def dish_list():
-    repo = MemRepo(dishes)
-    result = dish_list_use_case(repo)
+    repo = PostgresRepo(postgres_configuration)
+    request_object = build_dish_list_request()
+    result = dish_list_use_case(repo,request_object)
 
     return Response(
-        json.dumps(result, cls=DishJsonEncoder),
+        json.dumps(result.value, cls=DishJsonEncoder),
         mimetype="application/json",
         status=200,
     )

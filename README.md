@@ -28,5 +28,5 @@ Module: Dish <br>
 - [x] UseCase Implementation<br> 
 - [x] Serialization / Deserialization<br> 
 - [x] Mock Repo Implementation<br>  
- Database with SQLAlchemy<br> 
+- [] Database with SQLAlchemy<br> 
 - [x] Apply Tests<br> 
