@@ -17,7 +17,8 @@ class MongoRepo:
 
     def _create_dish_objects(self, dish_data):
         return {
-            "id": str(dish_data["_id"]),
+            "_id": str(dish_data["_id"]),
+            "id": dish_data["id"],
             "name": dish_data["name"],
             "description": dish_data["description"],
             "price": dish_data["price"],
@@ -37,7 +38,7 @@ class MongoRepo:
 
     def post(self,dish):
         self.db.dishes.insert_one(dish)
-        return {'message': 'Dish added successfully', 'dishes': self.list()}, 201
+        return {'message': 'Dish added successfully', 'dishes': self.list()}
 
     def put(self,dish):
         result = self.db.dishes.update_one(
@@ -46,14 +47,10 @@ class MongoRepo:
         )
 
         if result.modified_count > 0:
-                return {'message': 'Dish updated successfully', 'dishes': self.list()}, 200
+            return {'message': 'Dish updated successfully', 'dishes': self.list()}
         else:
-            return {'error': 'Dish not found or no changes were made'}, 404
+            return {'error': 'Dish not found or no changes were made'}
         
     def delete(self,dish_id):
-        result = self.db.dishes.delete_one({"id": dish_id})
-
-        if result.deleted_count > 0:
-            return {'message': 'Dish deleted successfully'}, 200
-        else:
-            return {'error': 'Dish not found'}, 404
+        self.db.dishes.delete_one({"id": dish_id})
+        return self.list()
