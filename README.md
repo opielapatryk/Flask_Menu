@@ -30,3 +30,13 @@ Module: Dish <br>
 - [x] Mock Repo Implementation<br>  
 - [x] Database with SQLAlchemy<br> 
 - [x] Apply Tests<br> 
+
+# Useful commands:
+### Testing 
+- ./manage.py test <br>
+- ./manage.py test -- --integration <br>
+
+### Build, run, stop
+- ./manage.py compose build web<br>
+- ./manage.py compose up<br>
+- ./manage.py compose down<br>

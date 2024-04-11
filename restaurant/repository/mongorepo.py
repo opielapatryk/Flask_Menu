@@ -15,20 +15,45 @@ class MongoRepo:
 
         self.db = client[configuration["APPLICATION_DB"]]
 
-    def _create_dish_objects(self, results):
-        return [
-            dish.Dish(
-                id=q["id"],
-                name=q["name"],
-                description=q["description"],
-                price=q["price"],
-            )
-            for q in results
-        ]
+    def _create_dish_objects(self, dish_data):
+        return {
+            "id": str(dish_data["_id"]),
+            "name": dish_data["name"],
+            "description": dish_data["description"],
+            "price": dish_data["price"],
+        }
 
     def list(self):
         collection = self.db.dishes
+        results = collection.find()
+        dishes = [self._create_dish_objects(dish) for dish in results]
+        return dishes
+    
+    def get(self,dish_id):
+        collection = self.db.dishes
+        dish = collection.find_one({'id': dish_id})
+        result = self._create_dish_objects(dish)
+        return result
 
-        result = collection.find()
+    def post(self,dish):
+        self.db.dishes.insert_one(dish)
+        return {'message': 'Dish added successfully', 'dishes': self.list()}, 201
 
-        return self._create_dish_objects(result)
+    def put(self,dish):
+        result = self.db.dishes.update_one(
+            {"id": dish['id']},
+            {"$set": dish}
+        )
+
+        if result.modified_count > 0:
+                return {'message': 'Dish updated successfully', 'dishes': self.list()}, 200
+        else:
+            return {'error': 'Dish not found or no changes were made'}, 404
+        
+    def delete(self,dish_id):
+        result = self.db.dishes.delete_one({"id": dish_id})
+
+        if result.deleted_count > 0:
+            return {'message': 'Dish deleted successfully'}, 200
+        else:
+            return {'error': 'Dish not found'}, 404
