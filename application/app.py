@@ -1,6 +1,6 @@
 from flask import Flask
 
-from application.rest import dish_mongo
+from application.rest import dish
 
 
 def create_app(config_name):
@@ -11,6 +11,6 @@ def create_app(config_name):
 
     app.config.from_object(config_module)
 
-    app.register_blueprint(dish_mongo.blueprint)
+    app.register_blueprint(dish.blueprint)
 
     return app
