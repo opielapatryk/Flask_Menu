@@ -20,12 +20,12 @@ class PostgresRepo:
     
     def _create_dish_object(self, results):
         return [
-            dish.Dish(
-                id=result.id,
-                name=result.name,
-                description=result.description,
-                price=result.price,
-            )
+            {
+                'id':result.id,
+                'name':result.name,
+                'description':result.description,
+                'price':result.price,
+            }
             for result in results
         ]
     
@@ -33,16 +33,15 @@ class PostgresRepo:
         DBSession = sessionmaker(bind=self.engine)
         session = DBSession()
         query = session.query(Dish)
-
-        return self._create_dish_object(query.all())
+        result = self._create_dish_object(query.all())
+        return result
     
 
     def get(self, id):
         dishes = self.list()
         for dish in dishes:
-            if dish.id == id:
+            if dish['id'] == id:
                 return dish
-        return '404 Not Found'
     
     def post(self, dish):
         dish_instance = Dish(name=dish['name'], description=dish['description'], price=dish['price'])
@@ -64,6 +63,24 @@ class PostgresRepo:
             dish_to_update.name = updated_dish['name']
             dish_to_update.description = updated_dish['description']
             dish_to_update.price = updated_dish['price']
+            session.commit()
+
+        query = session.query(Dish)
+        return self._create_dish_object(query.all())
+    
+    def patch(self, updated_dish, dish_id):
+        DBSession = sessionmaker(bind=self.engine)
+        session = DBSession()
+
+        dish_to_update = session.query(Dish).filter_by(id=dish_id).first()
+        if dish_to_update:
+            for key in updated_dish.keys():
+                if key == 'name':
+                    dish_to_update.name = updated_dish['name']
+                if key == 'description':
+                    dish_to_update.description = updated_dish['description']
+                if key == 'price':
+                    dish_to_update.price = updated_dish['price']
             session.commit()
 
         query = session.query(Dish)

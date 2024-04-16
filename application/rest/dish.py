@@ -20,7 +20,7 @@ postgres_configuration = {
     "POSTGRES_PASSWORD":'postgres',
     "POSTGRES_HOSTNAME": 'db',
     "POSTGRES_PORT": 5432,
-    "APPLICATION_DB": 'restaurant',
+    "APPLICATION_DB": 'postgres',
 }
 
 dishes = [
@@ -70,7 +70,7 @@ def welcome():
 
 @blueprint.route("/api/v1/dishes", methods=["GET"])
 def dish_list():
-    repo = MemRepo(dishes)
+    repo = PostgresRepo(postgres_configuration)
     request_object = build_dish_list_request()
     result = dish_list_use_case(repo,request_object)
 
@@ -99,6 +99,7 @@ def dish_list():
     start_index = (page - 1) * per_page
     end_index = start_index + per_page
     paginated_dishes = sorted_dishes[start_index:end_index]
+
     
     return Response(
         json.dumps(paginated_dishes, cls=DishJsonEncoder),
@@ -108,7 +109,7 @@ def dish_list():
     
 @blueprint.route("/api/v1/dishes/<int:dish_id>", methods=["GET"])
 def dish_get(dish_id):
-    repo = MemRepo(dishes)
+    repo = PostgresRepo(postgres_configuration)
     result = dish_get_use_case(repo, dish_id)
 
     if result:
@@ -136,7 +137,7 @@ def dish_post():
     if not name or not description or not price or not id:
         return Response(json.dumps({"message":"Missing required fields"}),mimetype="application/json",status=400)
     
-    repo = MemRepo(dishes)
+    repo = PostgresRepo(postgres_configuration)
     result = dish_post_use_case(repo, dish)
 
     return Response(
@@ -147,7 +148,7 @@ def dish_post():
 
 @blueprint.route("/api/v1/dishes", methods=["PUT"])
 def dish_put():
-    repo = MemRepo(dishes)
+    repo = PostgresRepo(postgres_configuration)
     updated_dish = request.json
     result = dish_put_use_case(repo, updated_dish)
 
@@ -166,7 +167,7 @@ def dish_put():
 
 @blueprint.route("/api/v1/dishes/<int:dish_id>", methods=["PATCH"])
 def dish_patch(dish_id):
-    repo = MemRepo(dishes)
+    repo = PostgresRepo(postgres_configuration)
     dish = request.json
 
     updated_dish_data = {}
@@ -192,7 +193,7 @@ def dish_patch(dish_id):
 
 @blueprint.route("/api/v1/dishes/<int:dish_id>", methods=["DELETE"])
 def dish_delete(dish_id):
-    repo = MemRepo(dishes)
+    repo = PostgresRepo(postgres_configuration)
     result = dish_delete_use_case(repo, dish_id)
 
     if result:
