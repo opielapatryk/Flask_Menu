@@ -33,8 +33,9 @@ class MongoRepo:
     def get(self,dish_id):
         collection = self.db.dishes
         dish = collection.find_one({'id': dish_id})
-        result = self._create_dish_objects(dish)
-        return result
+        if dish:
+            result = self._create_dish_objects(dish)
+            return result
 
     def post(self,dish):
         self.db.dishes.insert_one(dish)
@@ -50,7 +51,19 @@ class MongoRepo:
             return {'message': 'Dish updated successfully', 'dishes': self.list()}
         else:
             return {'error': 'Dish not found or no changes were made'}
+
+    def patch(self, updated_fields,dish_id):
+        if dish_id <= len(list(self.db.dishes.find())):
+            update_query = {"$set": updated_fields}
+
+            self.db.dishes.update_one(
+                {"id": dish_id},
+                update_query
+            )
+
+            return self.list()
         
     def delete(self,dish_id):
-        self.db.dishes.delete_one({"id": dish_id})
-        return self.list()
+        if self.db.dishes.find_one({"id": dish_id}):
+            self.db.dishes.delete_one({"id": dish_id})
+            return self.list()
