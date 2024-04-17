@@ -1,5 +1,4 @@
-from flask import jsonify
-from flask import Blueprint, request, Response
+from flask import jsonify,Blueprint, request, Response
 import json
 from restaurant.serializers.dish import DishJsonEncoder
 from restaurant.repository.mongorepo import MongoRepo
@@ -67,144 +66,138 @@ def welcome():
         }
     })
 
+repo = MemRepo(dishes)
 
-@blueprint.route("/api/v1/dishes", methods=["GET"])
-def dish_list():
-    repo = PostgresRepo(postgres_configuration)
-    request_object = build_dish_list_request()
-    result = dish_list_use_case(repo,request_object)
+@blueprint.route("/api/v1/dishes", methods=["GET","POST","PUT"])
+def dish_view():
+    if request.method == "GET":
+        request_object = build_dish_list_request()
+        result = dish_list_use_case(repo,request_object)
 
-    # Filtering options
-    description = request.args.get('description')
-    min_price = float(request.args.get('min_price', 0))
-    max_price = float(request.args.get('max_price', float('inf')))
+        # Filtering options
+        description = request.args.get('description')
+        min_price = float(request.args.get('min_price', 0))
+        max_price = float(request.args.get('max_price', float('inf')))
 
-    # Apply filters
-    filtered_dishes = filter(lambda d: d['price'] >= min_price and d['price'] <= max_price, result.value)
+        # Apply filters
+        filtered_dishes = filter(lambda d: d['price'] >= min_price and d['price'] <= max_price, result.value)
 
-    if description:
-        filtered_dishes = filter(lambda d: d['description'] == description, filtered_dishes)
+        if description:
+            filtered_dishes = filter(lambda d: d['description'] == description, filtered_dishes)
 
 
-    # Sorting parameters
-    sort_by = request.args.get('sort_by', 'id')
-    sort_order = request.args.get('sort_order', 'asc')
-    sorted_dishes = sorted(filtered_dishes, key=lambda p: p[sort_by], reverse=sort_order.lower() == 'desc')
+        # Sorting parameters
+        sort_by = request.args.get('sort_by', 'id')
+        sort_order = request.args.get('sort_order', 'asc')
+        sorted_dishes = sorted(filtered_dishes, key=lambda p: p[sort_by], reverse=sort_order.lower() == 'desc')
 
-    # Pagination parameters
-    page = int(request.args.get('page', 1))
-    per_page = int(request.args.get('per_page', 10))
+        # Pagination parameters
+        page = int(request.args.get('page', 1))
+        per_page = int(request.args.get('per_page', 10))
 
-    # Paginate the results
-    start_index = (page - 1) * per_page
-    end_index = start_index + per_page
-    paginated_dishes = sorted_dishes[start_index:end_index]
+        # Paginate the results
+        start_index = (page - 1) * per_page
+        end_index = start_index + per_page
+        paginated_dishes = sorted_dishes[start_index:end_index]
 
-    
-    return Response(
-        json.dumps(paginated_dishes, cls=DishJsonEncoder),
-        mimetype="application/json",
-        status=200,
-    )
-    
-@blueprint.route("/api/v1/dishes/<int:dish_id>", methods=["GET"])
-def dish_get(dish_id):
-    repo = PostgresRepo(postgres_configuration)
-    result = dish_get_use_case(repo, dish_id)
-
-    if result:
+        
         return Response(
-            json.dumps(result, cls=DishJsonEncoder),
+            json.dumps(paginated_dishes, cls=DishJsonEncoder),
             mimetype="application/json",
             status=200,
         )
-    else:
-        return Response(
-            json.dumps({"message":"Dish not found"}),
-            mimetype="application/json",
-            status=404,
-        )
-
-@blueprint.route("/api/v1/dishes/", methods=["POST"])
-def dish_post():
-    dish = request.json
-
-    id = dish.get('id')
-    name = dish.get('name')
-    description = dish.get('description')
-    price = dish.get('price')
-
-    if not name or not description or not price or not id:
-        return Response(json.dumps({"message":"Missing required fields"}),mimetype="application/json",status=400)
     
-    repo = PostgresRepo(postgres_configuration)
-    result = dish_post_use_case(repo, dish)
+    if request.method == 'POST':
+        dish = request.json
 
-    return Response(
-        json.dumps(result, cls=DishJsonEncoder),
-        mimetype="application/json",
-        status=201,
-    )
+        id = dish.get('id')
+        name = dish.get('name')
+        description = dish.get('description')
+        price = dish.get('price')
 
-@blueprint.route("/api/v1/dishes", methods=["PUT"])
-def dish_put():
-    repo = PostgresRepo(postgres_configuration)
-    updated_dish = request.json
-    result = dish_put_use_case(repo, updated_dish)
+        if not name or not description or not price or not id:
+            return Response(json.dumps({"message":"Missing required fields"}),mimetype="application/json",status=400)
+        
+        result = dish_post_use_case(repo, dish)
 
-    if result:
         return Response(
             json.dumps(result, cls=DishJsonEncoder),
             mimetype="application/json",
             status=201,
         )
-    else:
-        return Response(
-            json.dumps({"message":"Dish not found"}),
-            mimetype="application/json",
-            status=404,
-        )
-
-@blueprint.route("/api/v1/dishes/<int:dish_id>", methods=["PATCH"])
-def dish_patch(dish_id):
-    repo = PostgresRepo(postgres_configuration)
-    dish = request.json
-
-    updated_dish_data = {}
     
-    if dish.get('name') is not None: updated_dish_data['name'] = dish.get('name')
-    if dish.get('description') is not None: updated_dish_data['description'] = dish.get('description')
-    if dish.get('price') is not None: updated_dish_data['price'] = dish.get('price')
+    if request.method == 'PUT':
+        updated_dish = request.json
+        result = dish_put_use_case(repo, updated_dish)
 
-    result = dish_patch_use_case(repo, updated_dish_data, dish_id)
+        if result:
+            return Response(
+                json.dumps(result, cls=DishJsonEncoder),
+                mimetype="application/json",
+                status=201,
+            )
+        else:
+            return Response(
+                json.dumps({"message":"Dish not found"}),
+                mimetype="application/json",
+                status=404,
+            )
 
-    if result:
-        return Response(
-            json.dumps(result, cls=DishJsonEncoder),
-            mimetype="application/json",
-            status=201,
-        )
-    else:
-        return Response(
-            json.dumps({"message":"Dish not found"}),
-            mimetype="application/json",
-            status=404,
-        )
+        
+@blueprint.route("/api/v1/dishes/<int:dish_id>", methods=["GET","PATCH","DELETE"])
+def dish_specific_view(dish_id):
+    if request.method == "GET":
+        result = dish_get_use_case(repo, dish_id)
 
-@blueprint.route("/api/v1/dishes/<int:dish_id>", methods=["DELETE"])
-def dish_delete(dish_id):
-    repo = PostgresRepo(postgres_configuration)
-    result = dish_delete_use_case(repo, dish_id)
+        if result:
+            return Response(
+                json.dumps(result, cls=DishJsonEncoder),
+                mimetype="application/json",
+                status=200,
+            )
+        else:
+            return Response(
+                json.dumps({"message":"Dish not found"}),
+                mimetype="application/json",
+                status=404,
+            )
+        
+    if request.method == "PATCH":
+        dish = request.json
 
-    if result:
-        return Response(
-            json.dumps(result, cls=DishJsonEncoder),
-            mimetype="application/json",
-            status=200,
-        )
-    else:
-        return Response(
-            json.dumps({"message":"Dish not found"}),
-            mimetype="application/json",
-            status=404,
-        )
+        updated_dish_data = {}
+        
+        if dish.get('name') is not None: updated_dish_data['name'] = dish.get('name')
+        if dish.get('description') is not None: updated_dish_data['description'] = dish.get('description')
+        if dish.get('price') is not None: updated_dish_data['price'] = dish.get('price')
+
+        result = dish_patch_use_case(repo, updated_dish_data, dish_id)
+
+        if result:
+            return Response(
+                json.dumps(result, cls=DishJsonEncoder),
+                mimetype="application/json",
+                status=201,
+            )
+        else:
+            return Response(
+                json.dumps({"message":"Dish not found"}),
+                mimetype="application/json",
+                status=404,
+            )
+        
+    if request.method == 'DELETE':
+        result = dish_delete_use_case(repo, dish_id)
+
+        if result:
+            return Response(
+                json.dumps(result, cls=DishJsonEncoder),
+                mimetype="application/json",
+                status=200,
+            )
+        else:
+            return Response(
+                json.dumps({"message":"Dish not found"}),
+                mimetype="application/json",
+                status=404,
+            )
