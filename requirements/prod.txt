@@ -5,3 +5,5 @@ flask-migrate
 gunicorn
 alembic 
 pymongo
+flask_swagger_ui
+flask-cors

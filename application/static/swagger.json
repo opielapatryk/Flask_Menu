@@ -1,0 +1,306 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Restaurant API",
+    "description": "API for managing restaurant dishes",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/api/v1/dishes": {
+      "get": {
+        "summary": "Get a list of dishes",
+        "description": "Retrieve a list of dishes optionally filtered, sorted, and paginated.",
+        "parameters": [
+          {
+            "name": "description",
+            "in": "query",
+            "description": "Filter dishes by description.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "description": "Minimum price of dishes to filter.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "description": "Maximum price of dishes to filter.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "Attribute to sort by (e.g., 'id', 'name', 'price').",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "description": "Sorting order ('asc' or 'desc').",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page for pagination.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of dishes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Dish"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new dish",
+        "description": "Create a new dish.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Dish"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The created dish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dish"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a dish",
+        "description": "Update a dish.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Dish"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The updated dish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dish"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Dish not found."
+          }
+        }
+      }
+    },
+    "/api/v1/dishes/{dish_id}": {
+      "get": {
+        "summary": "Get a dish by ID",
+        "description": "Retrieve a dish by its ID.",
+        "parameters": [
+          {
+            "name": "dish_id",
+            "in": "path",
+            "description": "ID of the dish to retrieve.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested dish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dish"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Dish not found."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a dish",
+        "description": "Delete a dish by its ID.",
+        "parameters": [
+          {
+            "name": "dish_id",
+            "in": "path",
+            "description": "ID of the dish to delete.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The deleted dish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dish"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Dish not found."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a dish",
+        "description": "Update a dish by its ID.",
+        "parameters": [
+          {
+            "name": "dish_id",
+            "in": "path",
+            "description": "ID of the dish to update.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Dish"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The updated dish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dish"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Dish not found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Dish": {
+        "required": [
+          "description",
+          "id",
+          "name",
+          "price"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

@@ -57,15 +57,6 @@ mongo_configuration = {
     "APPLICATION_DB": 'restaurant',
 }
 
-@blueprint.route("/", methods=["GET"])
-def welcome():
-    return jsonify({
-        "message": "Welcome to the Restaurant API!",
-        "endpoints": {
-            "dishes": "/api/v1/dishes"
-        }
-    })
-
 repo = MemRepo(dishes)
 
 @blueprint.route("/api/v1/dishes", methods=["GET","POST","PUT"])
